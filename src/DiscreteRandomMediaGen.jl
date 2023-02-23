@@ -14,5 +14,6 @@ include("config.jl")
 include("generate.jl")
 include("vis.jl")
 include("sample.jl")
+include("stats.jl")
 
 end

@@ -1,7 +1,18 @@
 export sample_sphere
 
-"""
+@doc raw"""
 Sample from the particle configuration described by `xml` a sphere of radius `R` centered randomly.
+
+When a particle intersects with the sample sphere, the intersection volume is determined via:
+
+```math
+\begin{aligned}
+V & =V\left(R_1, h_1\right)+V\left(R_2, h_2\right) \\
+& =\frac{\pi(R+r-d)^2\left(d^2+2 d r-3 r^2+2 d R+6 r R-3 R^2\right)}{12 d}
+\end{aligned}
+```
+
+Then the particle is accepted by probability ``\frac{V}{V_{\text{particle}}}``.
 
 Parameters:
 

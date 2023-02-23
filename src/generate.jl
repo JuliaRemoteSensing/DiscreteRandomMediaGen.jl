@@ -102,7 +102,7 @@ function modify_particles!(xml, radii, model)
         particle["D"] = 2 * r
         particle["M"] = r^3
         if model isa StickyHardSphereModel
-            particle["WD"] = -log(6 * model.τ / r) / SHSWellWidth[]
+            particle["WD"] = -log(6 * model.τ * SHSWellWidth[] / r)
         end
     end
 end
