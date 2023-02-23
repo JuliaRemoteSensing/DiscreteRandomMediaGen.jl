@@ -1,6 +1,6 @@
-using DiscreteRandomMediaGen
 using Test
+using TestItemRunner
 
 @testset "DiscreteRandomMediaGen.jl" begin
-    # Write your tests here.
+    @run_package_tests
 end

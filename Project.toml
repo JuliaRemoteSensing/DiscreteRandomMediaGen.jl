@@ -3,11 +3,18 @@ uuid = "4daba467-8373-474b-90bd-3ea212ae78fa"
 authors = ["Gabriel Wu <wuzihua@pku.edu.cn> and contributors"]
 version = "0.1.0"
 
+[deps]
+CodecBzip2 = "523fee87-0ab8-5b00-afb7-3ecf72e48cfd"
+DynamO_jll = "0ddfd873-8cd9-589f-a512-f0bf24c94f73"
+EzXML = "8f5d6c58-4d21-5cfd-889c-e3ad7ee6a615"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+TestItems = "1c621080-faea-4a02-84b6-bbd5e436b8fe"
+
 [compat]
+CodecBzip2 = "0.7"
+DynamO_jll = "1"
+EzXML = "1"
+Makie = "0.19"
+TestItems = "0.1"
 julia = "1.8"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
