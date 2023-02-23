@@ -1,0 +1,3 @@
+[deps]
+DiscreteRandomMediaGen = "4daba467-8373-474b-90bd-3ea212ae78fa"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
