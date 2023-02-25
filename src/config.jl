@@ -15,6 +15,7 @@ Parameters:
 - `save_snapshots`: path prefix to save snapshots of the simulation. Default to `""`, which means no snapshots will be saved. If not empty, snapshots will be named as `$(save_snapshots)/snapshot.$step.png` for each step.
 - `save_gif`: path to save a gif of the simulation. Default to `""`, which means no gif will be saved. If not empty, a gif will be saved to `$(save_fig)/snapshot.gif`.
 - `framerate`: framerate of the gif. Default to `10`.
+- `resolution`: resolution of the snapshots. Default to `(800, 600)`.
 - `seed`: seed for random number generator. Default to `nothing`, which means a random seed will be generated.
 """
 Base.@kwdef struct SimulationConfig{Model <: AbstractModel, F <: Function}
@@ -28,5 +29,6 @@ Base.@kwdef struct SimulationConfig{Model <: AbstractModel, F <: Function}
     save_snapshots::String = ""
     save_gif::String = ""
     framerate::Int = 10
+    resolution::NTuple{2, Int} = (800, 600)
     seed::Union{Nothing, Int} = nothing
 end

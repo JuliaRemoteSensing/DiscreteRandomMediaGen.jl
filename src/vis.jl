@@ -1,4 +1,4 @@
-export particleplot
+export particleplot, particleplot!
 
 @recipe(ParticlePlot, cfg) do scene
     Attributes()

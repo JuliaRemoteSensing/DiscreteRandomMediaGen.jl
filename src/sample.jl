@@ -19,8 +19,9 @@ Parameters:
 - `xml`: the XML Document describing the particle configuration.
 - `R`: the radius of the sample sphere.
 - `seed`: seed for random number generator. Default to `nothing`, which means a random seed will be generated.
+- `center`: the center of the sample sphere. Default to `nothing`, which means the center will be randomly generated.
 """
-function sample_sphere(xml, R, seed = nothing)
+function sample_sphere(xml, R; seed = nothing, center = nothing)
     if !isnothing(seed)
         Random.seed!(seed)
     end
@@ -32,7 +33,11 @@ function sample_sphere(xml, R, seed = nothing)
         throw(ArgumentError("The sphere radius is too large for the simulation size"))
     end
 
-    cx, cy, cz = (rand() - 0.5) * X, (rand() - 0.5) * Y, (rand() - 0.5) * Z
+    if isnothing(center)
+        cx, cy, cz = (rand() - 0.5) * X, (rand() - 0.5) * Y, (rand() - 0.5) * Z
+    else
+        cx, cy, cz = center
+    end
 
     sampled_particles = NTuple{4, Float64}[]
     for dx in -1:1, dy in -1:1, dz in -1:1
