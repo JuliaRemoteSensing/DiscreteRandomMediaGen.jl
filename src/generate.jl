@@ -2,45 +2,43 @@ export generate
 
 function generate(cfg::SimulationConfig)
     mktempdir() do tmpdir
-        current_dir = pwd()
         end_xml = nothing
+        config_xml(i) = joinpath(tmpdir, "config.$i.xml")
+        stats_xml = joinpath(tmpdir, "stats.xml")
 
         try
-            cd(tmpdir)
             N = cfg.cell_size^3 * 4
             radii = [cfg.radius_function() for _ in 1:N]
             V̄ = 8 * sum(radii .^ 3) / N
             density = √2 * cfg.volume_fraction / FCCVolumeFraction / V̄
             if isnothing(cfg.seed)
-                run(`$(dynamod()) -m0 -d$density -C$(cfg.cell_size) --i1 0 -oconfig.0.xml`)
+                run(`$(dynamod()) -m0 -d$density -C$(cfg.cell_size) --i1 0 -o$(config_xml(0))`)
             else
-                run(`$(dynamod()) -m0 -d$density -C$(cfg.cell_size) -s$(cfg.seed) --i1 0 -oconfig.0.xml`)
+                run(`$(dynamod()) -m0 -d$density -C$(cfg.cell_size) -s$(cfg.seed) --i1 0 -o$(config_xml(0))`)
             end
-            start_xml = readxml("config.0.xml")
+            start_xml = readxml(config_xml(0))
             modify_particles!(start_xml, radii, cfg.model)
             modify_interaction!(start_xml, cfg.model)
-            write("config.0.xml", start_xml)
+            write(config_xml(0), start_xml)
 
             step = 0
             mft = 0.0
-            savedir = isabspath(cfg.save_snapshots) ? cfg.save_snapshots :
-                      joinpath(current_dir, cfg.save_snapshots)
             if !isempty(cfg.save_snapshots)
                 fig, _, _ = particleplot(start_xml, figure = (resolution = cfg.resolution,))
-                save(joinpath(savedir, "snapshot.$step.png"), fig)
+                save(joinpath(cfg.save_snapshots, "snapshot.$step.png"), fig)
             end
 
             while step < cfg.maximum_steps
                 if isnothing(cfg.seed)
-                    run(`$(dynarun()) config.$step.xml -c$(cfg.collisions_per_step * N) -oconfig.$(step + 1).xml`)
+                    run(`$(dynarun()) $(config_xml(step)) -c$(cfg.collisions_per_step * N) -o$(config_xml(step + 1)) --out-data-file $stats_xml`)
                 else
-                    run(`$(dynarun()) config.$step.xml -c$(cfg.collisions_per_step * N) -s$(cfg.seed) -oconfig.$(step + 1).xml`)
+                    run(`$(dynarun()) $(config_xml(step)) -c$(cfg.collisions_per_step * N) -s$(cfg.seed) -o$(config_xml(step + 1)) --out-data-file $stats_xml`)
                 end
                 step += 1
-                xml = readxml("config.$step.xml")
+                xml = readxml(config_xml(step))
                 if !isempty(cfg.save_snapshots)
                     fig, _, _ = particleplot(xml, figure = (resolution = cfg.resolution,))
-                    save(joinpath(savedir, "snapshot.$step.png"), fig)
+                    save(joinpath(cfg.save_snapshots, "snapshot.$step.png"), fig)
                 end
 
                 mft′ = parse(Float64, findfirst("//Simulation", xml)["lastMFT"])
@@ -54,22 +52,17 @@ function generate(cfg::SimulationConfig)
             end
 
             if !isempty(cfg.save_gif)
-                xml = Observable(readxml("config.0.xml"))
+                xml = Observable(readxml(config_xml(0)))
                 fig, _, _ = particleplot(xml; figure = (resolution = cfg.resolution,))
-                savedir = isabspath(cfg.save_gif) ? cfg.save_gif :
-                          joinpath(current_dir, cfg.save_gif)
-
-                record(fig, joinpath(savedir, "snapshot.gif"), 0:step,
+                record(fig, joinpath(cfg.save_gif, "snapshot.gif"), 0:step,
                        framerate = cfg.framerate) do t
-                    xml[] = readxml("config.$t.xml")
+                    xml[] = readxml(config_xml(t))
                 end
             end
 
-            end_xml = readxml("config.$step.xml")
+            end_xml = readxml(config_xml(step))
         catch e
             @error "error occured during simulation" exception=e
-        finally
-            cd(current_dir)
         end
 
         return end_xml
