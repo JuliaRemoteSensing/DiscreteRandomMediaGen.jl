@@ -26,7 +26,7 @@ function generate(cfg::SimulationConfig)
             savedir = isabspath(cfg.save_snapshots) ? cfg.save_snapshots :
                       joinpath(current_dir, cfg.save_snapshots)
             if !isempty(cfg.save_snapshots)
-                fig, _, _ = particleplot(start_xml, figure=(resolution=cfg.resolution,))
+                fig, _, _ = particleplot(start_xml, figure = (resolution = cfg.resolution,))
                 save(joinpath(savedir, "snapshot.$step.png"), fig)
             end
 
@@ -39,7 +39,7 @@ function generate(cfg::SimulationConfig)
                 step += 1
                 xml = readxml("config.$step.xml")
                 if !isempty(cfg.save_snapshots)
-                    fig, _, _ = particleplot(xml, figure=(resolution=cfg.resolution,))
+                    fig, _, _ = particleplot(xml, figure = (resolution = cfg.resolution,))
                     save(joinpath(savedir, "snapshot.$step.png"), fig)
                 end
 
@@ -55,7 +55,7 @@ function generate(cfg::SimulationConfig)
 
             if !isempty(cfg.save_gif)
                 xml = Observable(readxml("config.0.xml"))
-                fig, _, _ = particleplot(xm; figure=(resolution=cfg.resolution))
+                fig, _, _ = particleplot(xml; figure = (resolution = cfg.resolution,))
                 savedir = isabspath(cfg.save_gif) ? cfg.save_gif :
                           joinpath(current_dir, cfg.save_gif)
 
